@@ -1,46 +1,49 @@
+using namespace std;
+
 #include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <fstream>
 
-// Subject Data Structure (Mata Pelajaran)
-class Subject {
-public:
-    std::string name;
-    int duration;
-    bool practicum;
+// Forward declaration
+class Schedule;
+class Subject;
 
-    Subject(std::string n, bool p) : name(n), practicum(p) {
-        duration = p ? 120 : 60;
-    }
+// Student Data Structure (Siswa)
+class Student {
+public:
+    string name;
+    string nisn;
+    Schedule* schedule;
+    float avgScore;
+
+    Student(string n, string id, Schedule* s, float avg) 
+        : name(n), nisn(id), schedule(s), avgScore(avg) {}
 };
 
 // Teacher Data Structure (Guru)
 class Teacher {
 public:
-    std::string name;
-    std::string nuptk;
+    string name;
+    string nuptk;
     Subject* subject;
-    std::string educationLevel;
+    string educationLevel;
 
-    Teacher(std::string n, std::string id, Subject* s, std::string edu) 
+    Teacher(string n, string id, Subject* s, string edu) 
         : name(n), nuptk(id), subject(s), educationLevel(edu) {}
 };
 
-// Forward declaration
-class Schedule;
-
-// Student Data Structure (Siswa)
-class Student {
+// Subject Data Structure (Mata Pelajaran)
+class Subject {
 public:
-    std::string name;
-    std::string nisn;
-    Schedule* schedule;
-    float avgScore;
+    string name;
+    int duration;
+    bool practicum;
 
-    Student(std::string n, std::string id, Schedule* s, float avg) 
-        : name(n), nisn(id), schedule(s), avgScore(avg) {}
+    Subject(string n, bool p) : name(n), practicum(p) {
+        duration = p ? 120 : 60;
+    }
 };
 
 // Schedule Data Structure (Jadwal)
@@ -48,23 +51,23 @@ class Schedule {
 public:
     Subject* subject;
     Teacher* teacher;
-    std::string startTime;
+    string startTime;
 
-    Schedule(Subject* s, Teacher* t, std::string time) 
+    Schedule(Subject* s, Teacher* t, string time) 
         : subject(s), teacher(t), startTime(time) {}
 };
 
 class SchoolManagementSystem {
 private:
-    std::vector<Student*> students;
-    std::vector<Teacher*> teachers;
-    std::vector<Subject*> subjects;
-    std::vector<Schedule*> schedules;
+    vector<Student*> students;
+    vector<Teacher*> teachers;
+    vector<Subject*> subjects;
+    vector<Schedule*> schedules;
 
     // Helper function to get input with spaces
-    std::string getInputWithSpaces() {
-        std::string input;
-        std::getline(std::cin >> std::ws, input);
+    string getInputWithSpaces() {
+        string input;
+        getline(cin >> ws, input);
         return input;
     }
 
@@ -75,169 +78,209 @@ public:
     void addSchedule(Schedule* schedule) { schedules.push_back(schedule); }
 
     void displayStudents() {
-        std::cout << std::endl;
-        std::cout << "Daftar Siswa:\n";
+        cout << endl;
+        cout << "Daftar Siswa:\n";
         for (size_t i = 0; i < students.size(); ++i) {
-            std::cout << i+1 << ". " << students[i]->name 
+            cout << i+1 << ". " << students[i]->name 
                       << " - " << students[i]->nisn 
                       << " || Nilai avg: " << students[i]->avgScore;
             if (students[i]->schedule) {
-                std::cout << ", Jadwal: " << students[i]->schedule->subject->name 
+                cout << ", Jadwal: " << students[i]->schedule->subject->name 
                           << "(" << students[i]->schedule->startTime << ")";
             }
-            std::cout << std::endl;
+            cout << endl;
         }
     }
 
     void displayTeachers() {
-        std::cout << std::endl;
-        std::cout << "Guru Tersedia:\n";
+        cout << endl;
+        cout << "Guru Tersedia:\n";
         for (size_t i = 0; i < teachers.size(); ++i) {
-            std::cout << i+1 << ". " << teachers[i]->name << " - " << teachers[i]->subject->name << " - " << teachers[i]->educationLevel << std::endl;
+            cout << i+1 << ". " << teachers[i]->name << " - " << teachers[i]->subject->name << " - " << teachers[i]->educationLevel << endl;
         }
     }
 
     void displayTeachersDescending() {
-        std::cout << std::endl;
-        std::cout << "Guru Tersedia (Descending):\n";
-        std::vector<Teacher*> sortedTeachers = teachers;
-        std::sort(sortedTeachers.begin(), sortedTeachers.end(), 
+        cout << endl;
+        cout << "Guru Tersedia (Descending):\n";
+        vector<Teacher*> sortedTeachers = teachers;
+        sort(sortedTeachers.begin(), sortedTeachers.end(), 
             [](Teacher* a, Teacher* b) { return a->name > b->name; });
         
         for (size_t i = 0; i < sortedTeachers.size(); ++i) {
-            std::cout << i+1 << ". " << sortedTeachers[i]->name << " - " << sortedTeachers[i]->nuptk 
-                      << " - " << sortedTeachers[i]->subject->name << " - " << sortedTeachers[i]->educationLevel << std::endl;
+            cout << i+1 << ". " << sortedTeachers[i]->name << " - " << sortedTeachers[i]->nuptk 
+                      << " - " << sortedTeachers[i]->subject->name << " - " << sortedTeachers[i]->educationLevel << endl;
         }
     }
 
     void displaySchedules() {
-        std::cout << std::endl;
-        std::cout << "Jadwal Tersedia:\n";
+        cout << endl;
+        cout << "Jadwal Tersedia:\n";
         for (size_t i = 0; i < schedules.size(); ++i) {
-            std::cout << i+1 << ". " << schedules[i]->subject->name 
+            cout << i+1 << ". " << schedules[i]->subject->name 
                       << " - " << schedules[i]->teacher->name
-                      << " - " << schedules[i]->startTime << std::endl;
+                      << " - " << schedules[i]->startTime << endl;
         }
     }
 
     void displaySchedulesAscending() {
-        std::cout << std::endl;
-        std::cout << "Jadwal Tersedia (Ascending):\n";
-        std::vector<Schedule*> sortedSchedules = schedules;
-        std::sort(sortedSchedules.begin(), sortedSchedules.end(), 
+        cout << endl;
+        cout << "Jadwal Tersedia (Ascending):\n";
+        vector<Schedule*> sortedSchedules = schedules;
+        sort(sortedSchedules.begin(), sortedSchedules.end(), 
             [](Schedule* a, Schedule* b) { return a->subject->name < b->subject->name; });
         
         for (size_t i = 0; i < sortedSchedules.size(); ++i) {
-            std::cout << i+1 << ". " << sortedSchedules[i]->subject->name 
+            cout << i+1 << ". " << sortedSchedules[i]->subject->name 
                       << " - " << sortedSchedules[i]->teacher->name
-                      << " - " << sortedSchedules[i]->startTime << std::endl;
+                      << " - " << sortedSchedules[i]->startTime << endl;
         }
     }
 
     void displaySubjects() {
-        std::cout << std::endl;
-        std::cout << "Daftar Pelajaran:\n";
+        cout << endl;
+        cout << "Daftar Pelajaran:\n";
         for (size_t i = 0; i < subjects.size(); ++i) {
-            std::cout << i+1 << ". " << subjects[i]->name 
+            cout << i+1 << ". " << subjects[i]->name 
                       << " || Durasi: " << subjects[i]->duration << " menit, "
                       << "Praktikum: "
                       << (subjects[i]->practicum ? "Ada" : "Tidak")
-                      << std::endl;
+                      << endl;
+        }
+    }
+
+    void displaySubjectsAscending() {
+        cout << endl;
+        cout << "Daftar Pelajaran (Ascending):\n";
+        
+        vector<Subject*> sortedSubjects = subjects;
+        
+        sort(sortedSubjects.begin(), sortedSubjects.end(), 
+            [](Subject* a, Subject* b) { return a->name < b->name; });
+        
+        for (size_t i = 0; i < sortedSubjects.size(); ++i) {
+            cout << i+1 << ". " << sortedSubjects[i]->name 
+                    << " || Durasi: " << sortedSubjects[i]->duration << " menit, "
+                    << "Praktikum: "
+                    << (sortedSubjects[i]->practicum ? "Ada" : "Tidak")
+                    << endl;
+        }
+    }
+
+    void displaySchedulesBySubject(int subjectIndex) {
+        if (subjectIndex > 0 && subjectIndex <= subjects.size()) {
+            Subject* selectedSubject = subjects[subjectIndex - 1];
+            cout << "\nJadwal untuk " << selectedSubject->name << ":\n";
+            bool found = false;
+            int num = 0;
+            for (size_t i = 0; i < schedules.size(); ++i) {
+                if (schedules[i]->subject == selectedSubject) {
+                    cout << num+1 << ". " << schedules[i]->teacher->name
+                            << " - " << schedules[i]->startTime << endl;
+                    found = true;
+                    num++;
+                }
+            }
+            if (!found) {
+                cout << "Tidak ada jadwal untuk mata pelajaran ini.\n";
+            }
+        } else {
+            cout << "Nomor urutan pelajaran tidak valid.\n";
         }
     }
 
     void addNewStudent() {
         displaySchedules();
         
-        std::string name, nisn;
+        string name, nisn;
         int scheduleIndex;
         float avgScore;
 
-        std::cout << "Masukkan nama siswa: ";
+        cout << "Masukkan nama siswa: ";
         name = getInputWithSpaces();
-        std::cout << "Masukkan NISN: ";
-        std::cin >> nisn;
-        std::cout << "Masukkan nomor urutan jadwal: ";
-        std::cin >> scheduleIndex;
-        std::cout << "Masukkan nilai rata-rata: ";
-        std::cin >> avgScore;
+        cout << "Masukkan NISN: ";
+        cin >> nisn;
+        cout << "Masukkan nomor urutan jadwal: ";
+        cin >> scheduleIndex;
+        cout << "Masukkan nilai rata-rata: ";
+        cin >> avgScore;
 
         if (scheduleIndex > 0 && scheduleIndex <= schedules.size()) {
             Student* newStudent = new Student(name, nisn, schedules[scheduleIndex-1], avgScore);
             students.push_back(newStudent);
-            std::cout << "Siswa baru berhasil ditambahkan.\n";
+            cout << "Siswa baru berhasil ditambahkan.\n";
         } else {
-            std::cout << "Nomor urutan jadwal tidak valid.\n";
+            cout << "Nomor urutan jadwal tidak valid.\n";
         }
     }
 
     void addNewTeacher() {
         displaySubjects();
         
-        std::string name, nuptk, educationLevel;
+        string name, nuptk, educationLevel;
         int subjectIndex;
 
-        std::cout << "Masukkan nama guru: ";
+        cout << "Masukkan nama guru: ";
         name = getInputWithSpaces();
-        std::cout << "Masukkan NUPTK: ";
-        std::cin >> nuptk;
-        std::cout << "Masukkan nomor urutan pelajaran: ";
-        std::cin >> subjectIndex;
-        std::cout << "Masukkan tingkat pendidikan: ";
+        cout << "Masukkan NUPTK: ";
+        cin >> nuptk;
+        cout << "Masukkan nomor urutan pelajaran: ";
+        cin >> subjectIndex;
+        cout << "Masukkan tingkat pendidikan: ";
         educationLevel = getInputWithSpaces();
 
         if (subjectIndex > 0 && subjectIndex <= subjects.size()) {
             Teacher* newTeacher = new Teacher(name, nuptk, subjects[subjectIndex-1], educationLevel);
             teachers.push_back(newTeacher);
-            std::cout << "Guru baru berhasil ditambahkan.\n";
+            cout << "Guru baru berhasil ditambahkan.\n";
         } else {
-            std::cout << "Nomor urutan pelajaran tidak valid.\n";
+            cout << "Nomor urutan pelajaran tidak valid.\n";
         }
     }
 
     void addNewSubject() {
-        std::string name;
+        string name;
         char hasPracticum;
 
-        std::cout << std::endl;
-        std::cout << "Masukkan nama pelajaran: ";
+        cout << endl;
+        cout << "Masukkan nama pelajaran: ";
         name = getInputWithSpaces();
-        std::cout << "Ada praktikum? (Y/N): ";
-        std::cin >> hasPracticum;
+        cout << "Ada praktikum? (Y/N): ";
+        cin >> hasPracticum;
 
         bool practicum = (hasPracticum == 'Y' || hasPracticum == 'y');
         Subject* newSubject = new Subject(name, practicum);
         subjects.push_back(newSubject);
-        std::cout << "Pelajaran baru berhasil ditambahkan.\n";
+        cout << "Pelajaran baru berhasil ditambahkan.\n";
     }
 
     void addNewSchedule() {
         displaySubjects();
         int subjectIndex;
-        std::cout << "Masukkan nomor urutan pelajaran: ";
-        std::cin >> subjectIndex;
+        cout << "Masukkan nomor urutan pelajaran: ";
+        cin >> subjectIndex;
 
         displayTeachers();
         int teacherIndex;
-        std::cout << "Masukkan nomor urutan guru: ";
-        std::cin >> teacherIndex;
+        cout << "Masukkan nomor urutan guru: ";
+        cin >> teacherIndex;
 
-        std::string startTime;
-        std::cout << "Masukkan waktu pelaksanaan: ";
-        std::cin >> startTime;
+        string startTime;
+        cout << "Masukkan waktu pelaksanaan: ";
+        cin >> startTime;
 
         if (subjectIndex > 0 && subjectIndex <= subjects.size() &&
             teacherIndex > 0 && teacherIndex <= teachers.size()) {
             Schedule* newSchedule = new Schedule(subjects[subjectIndex-1], teachers[teacherIndex-1], startTime);
             schedules.push_back(newSchedule);
-            std::cout << "Jadwal baru berhasil ditambahkan.\n";
+            cout << "Jadwal baru berhasil ditambahkan.\n";
         } else {
-            std::cout << "Nomor urutan pelajaran atau guru tidak valid.\n";
+            cout << "Nomor urutan pelajaran atau guru tidak valid.\n";
         }
     }
 
     void writeStudentsToFile() {
-        std::ofstream file("siswa.txt");
+        ofstream file("siswa.txt");
         if (file.is_open()) {
             for (size_t i = 0; i < students.size(); ++i) {
                 file << i+1 << ". Nama: " << students[i]->name 
@@ -248,29 +291,29 @@ public:
                          << " - " << students[i]->schedule->teacher->name
                          << " (" << students[i]->schedule->startTime << ")";
                 }
-                file << std::endl;
+                file << endl;
             }
             file.close();
-            std::cout << "Data siswa berhasil ditulis ke siswa.txt" << std::endl;
+            cout << "Data siswa berhasil ditulis ke siswa.txt" << endl;
         } else {
-            std::cout << "Tidak dapat membuka file siswa.txt" << std::endl;
+            cout << "Tidak dapat membuka file siswa.txt" << endl;
         }
     }
 
     void writeTeachersToFile() {
-        std::ofstream file("guru.txt");
+        ofstream file("guru.txt");
         if (file.is_open()) {
             for (size_t i = 0; i < teachers.size(); ++i) {
                 file << i+1 << ". Nama: " << teachers[i]->name 
                      << ", NUPTK: " << teachers[i]->nuptk 
                      << ", Mapel: " << teachers[i]->subject->name
                      << ", Pendidikan: " << teachers[i]->educationLevel
-                     << std::endl;
+                     << endl;
             }
             file.close();
-            std::cout << "Data guru berhasil ditulis ke guru.txt" << std::endl;
+            cout << "Data guru berhasil ditulis ke guru.txt" << endl;
         } else {
-            std::cout << "Tidak dapat membuka file guru.txt" << std::endl;
+            cout << "Tidak dapat membuka file guru.txt" << endl;
         }
     }
 };
@@ -317,22 +360,22 @@ int main() {
 
     // Menu
     while (true) {
-        std::cout << "\nSistem Manajemen Sekolah\n";
-        std::cout << "1. Tampilkan Siswa\n";
-        std::cout << "2. Tampilkan Guru\n";
-        std::cout << "3. Tampilkan Jadwal\n";
-        std::cout << "4. Tampilkan Pelajaran\n";
-        std::cout << "5. Daftar Siswa Baru\n";
-        std::cout << "6. Daftar Guru Baru\n";
-        std::cout << "7. Daftar Pelajaran Baru\n";
-        std::cout << "8. Daftar Jadwal Baru\n";
-        std::cout << "9. Tulis Data Siswa ke File\n";
-        std::cout << "10. Tulis Data Guru ke File\n";
-        std::cout << "11. Keluar\n";
-        std::cout << "Pilih menu: ";
+        cout << "\nSistem Manajemen Sekolah\n";
+        cout << "1. Tampilkan Siswa\n";
+        cout << "2. Tampilkan Guru\n";
+        cout << "3. Tampilkan Jadwal\n";
+        cout << "4. Tampilkan Pelajaran\n";
+        cout << "5. Daftar Siswa Baru\n";
+        cout << "6. Daftar Guru Baru\n";
+        cout << "7. Daftar Pelajaran Baru\n";
+        cout << "8. Daftar Jadwal Baru\n";
+        cout << "9. Tulis Data Siswa ke File\n";
+        cout << "10. Tulis Data Guru ke File\n";
+        cout << "11. Keluar\n";
+        cout << "Pilih menu: ";
 
         int choice;
-        std::cin >> choice;
+        cin >> choice;
 
         switch (choice) {
             case 1:
@@ -341,11 +384,29 @@ int main() {
             case 2:
                 sms.displayTeachersDescending();
                 break;
-            case 3:
-                sms.displaySchedulesAscending();
+            case 3: {
+                int scheduleChoice;
+                cout << "\nPilih opsi:\n";
+                cout << "1. Semua Jadwal\n";
+                cout << "2. Cari berdasarkan mata pelajaran\n";
+                cout << "Pilihan Anda: ";
+                cin >> scheduleChoice;
+
+                if (scheduleChoice == 1) {
+                    sms.displaySchedulesAscending();
+                } else if (scheduleChoice == 2) {
+                    sms.displaySubjects();
+                    int subjectIndex;
+                    cout << "Masukkan nomor urutan pelajaran: ";
+                    cin >> subjectIndex;
+                    sms.displaySchedulesBySubject(subjectIndex);
+                } else {
+                    cout << "Pilihan tidak valid.\n";
+                }
                 break;
+            }
             case 4:
-                sms.displaySubjects();
+                sms.displaySubjectsAscending();
                 break;
             case 5:
                 sms.addNewStudent();
@@ -366,16 +427,12 @@ int main() {
                 sms.writeTeachersToFile();
                 break;
             case 11:
-                std::cout << "Terima kasih telah menggunakan sistem ini.\n";
+                cout << "Terima kasih telah menggunakan sistem ini.\n";
                 return 0;
             default:
-                std::cout << "Pilihan tidak valid. Silakan coba lagi.\n";
+                cout << "Pilihan tidak valid. Silakan coba lagi.\n";
         }
     }
-
-
-    // Jangan lupa untuk membersihkan memori di akhir program
-    // (Ini hanya contoh sederhana, dalam praktiknya kamu mungkin perlu manajemen memori yang lebih baik)
 
     return 0;
 }
