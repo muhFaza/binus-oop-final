@@ -1,3 +1,11 @@
+/* 
+2502141990 - Muhammad Faza
+Personal Email: fazamuhammad28@gmail.com
+Student Email: muhammad.faza@binus.ac.id
+OnlineGDB: https://onlinegdb.com/GSkGITQJ1 
+Demo Video: https://drive.google.com/file/d/1Uk293CvXvuccSKkCyfWQgPKZEALlCzyC/view?usp=sharing
+*/
+
 using namespace std;
 
 #include <iostream>
@@ -59,6 +67,10 @@ public:
 
 class SchoolManagementSystem {
 private:
+
+    // Choosing vector instead 
+    // of array because of 
+    // flexibility & built-in functionality
     vector<Student*> students;
     vector<Teacher*> teachers;
     vector<Subject*> subjects;
@@ -316,6 +328,12 @@ public:
             cout << "Tidak dapat membuka file guru.txt" << endl;
         }
     }
+
+    void pressEnterToContinue() {
+        cout << "\nTekan enter untuk melanjutkan...";
+        cin.ignore();
+        cin.get();
+    }
 };
 
 int main() {
@@ -380,9 +398,11 @@ int main() {
         switch (choice) {
             case 1:
                 sms.displayStudents();
+                sms.pressEnterToContinue();
                 break;
             case 2:
                 sms.displayTeachersDescending();
+                sms.pressEnterToContinue();
                 break;
             case 3: {
                 int scheduleChoice;
@@ -403,28 +423,37 @@ int main() {
                 } else {
                     cout << "Pilihan tidak valid.\n";
                 }
+                
+                sms.pressEnterToContinue();
                 break;
             }
             case 4:
                 sms.displaySubjectsAscending();
+                sms.pressEnterToContinue();
                 break;
             case 5:
                 sms.addNewStudent();
+                sms.pressEnterToContinue();
                 break;
             case 6:
                 sms.addNewTeacher();
+                sms.pressEnterToContinue();
                 break;
             case 7:
                 sms.addNewSubject();
+                sms.pressEnterToContinue();
                 break;
             case 8:
                 sms.addNewSchedule();
+                sms.pressEnterToContinue();
                 break;
             case 9:
                 sms.writeStudentsToFile();
+                sms.pressEnterToContinue();
                 break;
             case 10:
                 sms.writeTeachersToFile();
+                sms.pressEnterToContinue();
                 break;
             case 11:
                 cout << "Terima kasih telah menggunakan sistem ini.\n";
